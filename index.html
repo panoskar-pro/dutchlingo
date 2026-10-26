@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DutchLingo - Ολοκληρωμένο Πρόγραμμα 12 Εβδομάδων (A1 ➔ A2)</title>
+  <style>
+    :root {
+      --bg-dark: #111b21;
+      --sidebar-bg: #18252c;
+      --card-bg: #1f2f36;
+      --border-color: #344650;
+      --text-main: #ffffff;
+      --text-muted: #a6b8c1;
+      --duo-green: #58cc02;
+      --duo-green-dark: #46a302;
+      --duo-blue: #1cb0f6;
+      --duo-blue-dark: #1899d6;
+      --duo-orange: #ff9600;
+      --duo-orange-dark: #cc7800;
+      --duo-purple: #ce82ff;
+      --duo-purple-dark: #9b4dca;
+      --duo-red: #ff4b4b;
+      --duo-red-dark: #ea2b2b;
+      --duo-gold: #ffc800;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 980px;
+      background-color: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.55);
+      display: flex;
+      flex-direction: column;
+      min-height: 720px;
+    }
+
+    /* TOP NAVIGATION BAR */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 26px;
+      border-bottom: 2px solid var(--border-color);
+      background: var(--sidebar-bg);
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      font-size: 1.9rem;
+    }
+
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: var(--text-main);
+    }
+
+    .brand-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 12px;
+      padding: 8px 14px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+      transition: all 0.15s;
+    }
+
+    .back-btn:hover {
+      border-color: var(--duo-blue);
+      color: var(--duo-blue);
+    }
+
+    .progress-wrapper {
+      flex: 1;
+      min-width: 160px;
+      height: 16px;
+      background-color: var(--border-color);
+      border-radius: 999px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #58cc02, #89e219);
+      border-radius: 999px;
+      transition: width 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .stats-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stat-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 0.96rem;
+      padding: 7px 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    .hearts-badge { color: var(--duo-red); }
+    .xp-badge { color: var(--duo-gold); }
+    .weeks-badge { color: var(--duo-green); }
+
+    /* SCREENS */
+    .screen {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      padding: 28px;
+      justify-content: space-between;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* DASHBOARD (12 WEEKS ROADMAP) */
+    .dashboard-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(28, 176, 246, 0.16), rgba(88, 204, 2, 0.12));
+      border: 2px solid var(--border-color);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .dashboard-banner h1 {
+      font-size: 1.55rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .dashboard-banner p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
+    .month-section {
+      margin-bottom: 26px;
+    }
+
+    .month-header {
+      font-size: 1.05rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--duo-gold);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .weeks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(275px, 1fr));
+      gap: 14px;
+    }
+
+    .week-card {
+      border-radius: 18px;
+      padding: 18px;
+      cursor: pointer;
+      transition: transform 0.15s, filter 0.15s;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 148px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .week-card:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.06);
+    }
+
+    .week-card.blue { background: linear-gradient(135deg, #1cb0f6, #0b84c4); box-shadow: 0 5px 0 #075f8f; }
+    .week-card.green { background: linear-gradient(135deg, #58cc02, #3e9600); box-shadow: 0 5px 0 #2b6900; }
+    .week-card.orange { background: linear-gradient(135deg, #ff9600, #d47500); box-shadow: 0 5px 0 #995400; }
+    .week-card.purple { background: linear-gradient(135deg, #ce82ff, #9442cb); box-shadow: 0 5px 0 #682894; }
+
+    .week-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .week-badge {
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.6px;
+    }
+
+    .week-stars {
+      font-size: 1rem;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .week-card h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .week-card p {
+      font-size: 0.84rem;
+      opacity: 0.92;
+      line-height: 1.35;
+    }
+
+    /* THEORY SCREEN */
+    .theory-rule-box {
+      background: rgba(28, 176, 246, 0.12);
+      border-left: 5px solid var(--duo-blue);
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      line-height: 1.55;
+      margin: 14px 0 20px 0;
+      color: #e6f6ff;
+    }
+
+    .grammar-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .grammar-table th,
+    .grammar-table td {
+      padding: 12px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.94rem;
+    }
+
+    .grammar-table th {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--duo-gold);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+    }
+
+    .grammar-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .grammar-table tr:hover td {
+      background: rgba(28, 176, 246, 0.09);
+    }
+
+    .dutch-cell {
+      font-weight: 800;
+      color: var(--duo-blue);
+      font-size: 1.04rem;
+    }
+
+    .phonetic-cell {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .note-cell {
+      color: #ffd599;
+      font-size: 0.85rem;
+    }
+
+    /* AUDIO BUTTON */
+    .speaker-btn {
+      background-color: var(--duo-blue);
+      color: white;
+      border: none;
+      border-bottom: 4px solid var(--duo-blue-dark);
+      border-radius: 12px;
+      width: 38px;
+      height: 38px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, filter 0.15s;
+      flex-shrink: 0;
+    }
+
+    .speaker-btn:hover { filter: brightness(1.1); }
+    .speaker-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+    /* GAMEPLAY QUESTION AREA */
+    .quiz-container {
+      max-width: 680px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .level-pill {
+      display: inline-block;
+      background: rgba(28, 176, 246, 0.16);
+      color: var(--duo-blue);
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 5px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .level-pill.boss {
+      background: rgba(255, 200, 0, 0.22);
+      color: var(--duo-gold);
+    }
+
+    .question-type-label {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .prompt-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--border-color);
+      padding: 18px 20px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+    }
+
+    .prompt-main {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .prompt-sub {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .option-btn {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      border-bottom: 5px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 18px;
+      font-size: 1.06rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.12s;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: #52656d;
+    }
+
+    .option-btn.selected {
+      border-color: var(--duo-blue);
+      border-bottom-color: var(--duo-blue-dark);
+      background-color: rgba(28, 176, 246, 0.14);
+      color: var(--duo-blue);
+    }
+
+    .option-btn.correct {
+      border-color: var(--duo-green);
+      border-bottom-color: var(--duo-green-dark);
+      background-color: rgba(88, 204, 2, 0.18);
+      color: var(--duo-green);
+    }
+
+    .option-btn.wrong {
+      border-color: var(--duo-red);
+      border-bottom-color: var(--duo-red-dark);
+      background-color: rgba(255, 75, 75, 0.18);
+      color: var(--duo-red);
+    }
+
+    .translation-area {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .text-input {
+      width: 100%;
+      background: rgba(17, 27, 33, 0.85);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      color: var(--text-main);
+      font-size: 1.12rem;
+      font-weight: 600;
+      outline: none;
+      user-select: text;
+    }
+
+    .text-input:focus { border-color: var(--duo-blue); }
+
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .word-chip {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      border-bottom: 4px solid var(--border-color);
+      border-radius: 12px;
+      padding: 9px 15px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .word-chip:hover {
+      border-color: var(--duo-blue);
+      background: rgba(28, 176, 246, 0.1);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background-color: var(--duo-green);
+      color: #ffffff;
+      border: none;
+      border-bottom: 5px solid var(--duo-green-dark);
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 1.06rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      transition: all 0.1s;
+    }
+
+    .btn-primary:hover:not(:disabled) { filter: brightness(1.06); }
+    .btn-primary:active:not(:disabled) { transform: translateY(3px); border-bottom-width: 2px; }
+    .btn-primary:disabled {
+      background-color: var(--border-color);
+      border-bottom-color: #263238;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background-color: transparent;
+      color: var(--duo-blue);
+      border: 2px solid var(--border-color);
+      border-bottom: 4px solid var(--border-color);
+      border-radius: 16px;
+      padding: 13px;
+      font-size: 0.96rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* FEEDBACK SHEET */
+    .feedback-sheet {
+      margin-bottom: 14px;
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .feedback-sheet.correct {
+      display: flex;
+      background-color: rgba(88, 204, 2, 0.15);
+      border: 2px solid var(--duo-green);
+    }
+
+    .feedback-sheet.wrong {
+      display: flex;
+      background-color: rgba(255, 75, 75, 0.15);
+      border: 2px solid var(--duo-red);
+    }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feedback-title { font-size: 1.12rem; font-weight: 800; }
+    .feedback-sheet.correct .feedback-title { color: var(--duo-green); }
+    .feedback-sheet.wrong .feedback-title { color: var(--duo-red); }
+    .feedback-detail { font-size: 0.94rem; line-height: 1.45; }
+
+    /* END SCREEN */
+    .end-box {
+      text-align: center;
+      margin: auto;
+      max-width: 540px;
+      width: 100%;
+    }
+    .stars-row { font-size: 3rem; margin: 14px 0; letter-spacing: 8px; }
+    .stats-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 22px 0;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 14px 10px;
+    }
+    .stat-card .label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .stat-card .value { font-size: 1.4rem; font-weight: 800; }
+
+    .reset-btn {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      cursor: pointer;
+    }
+    .reset-btn:hover { color: var(--duo-red); border-color: var(--duo-red); }
+  </style>
+</head>
+<body>
+
+  <div class="app-shell">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="brand-group" onclick="goHome()">
+        <span class="brand-logo">🦁🇳🇱</span>
+        <div>
+          <div class="brand-title">DutchLingo Academy</div>
+          <div class="brand-sub">Πρόγραμμα 12 Εβδομάδων (A1 ➔ A2)</div>
+        </div>
+      </div>
+
+      <button class="back-btn" id="backToMenuBtn" onclick="goHome()">⬅ Όλες οι Εβδομάδες</button>
+
+      <div class="progress-wrapper" id="quizProgressWrapper">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-badge weeks-badge" title="Ολοκληρωμένες Εβδομάδες">📅 <span id="weeksDoneDisplay">0/12</span></div>
+        <div class="stat-badge hearts-badge" id="heartsDisplay" title="Καρδιές">❤️❤️❤️❤️❤️</div>
+        <div class="stat-badge xp-badge" title="Συνολικοί Πόντοι (Αποθηκεύονται αυτόματα)">🏆 <span id="xpDisplay">0</span> XP</div>
+      </div>
+    </div>
+
+    <!-- 1. DASHBOARD SCREEN (ΧΩΡΙΣΜΕΝΟ ΣΕ ΕΒΔΟΜΑΔΕΣ & ΜΗΝΕΣ) -->
+    <div class="screen active" id="startScreen">
+      <div>
+        <div class="dashboard-banner">
+          <div>
+            <h1>Καλώς ήρθες στο Εβδομαδιαίο Πρόγραμμα Ολλανδικών! 🌷</h1>
+            <p>Κάθε Εβδομάδα ξεκινά με <strong>Θεωρία &amp; Πίνακα Γραμματικής με Ήχο</strong> και συνεχίζει με <strong>10 Διαδραστικές Πίστες + Mini-Boss</strong>. Η πρόοδός σου αποθηκεύεται αυτόματα στον browser!</p>
+          </div>
+          <button class="reset-btn" onclick="resetProgress()" title="Μηδενισμός αποθηκευμένης προόδου">🗑️ Μηδενισμός Προόδου</button>
+        </div>
+
+        <div id="curriculumContainer"></div>
+      </div>
+    </div>
+
+    <!-- 2. THEORY SCREEN (ΠΙΝΑΚΑΣ ΓΡΑΜΜΑΤΙΚΗΣ & ΚΑΝΟΝΕΣ ΕΒΔΟΜΑΔΑΣ) -->
+    <div class="screen" id="theoryScreen">
+      <div>
+        <span class="level-pill" id="theoryWeekBadge">ΕΒΔΟΜΑΔΑ 1 • ΘΕΩΡΙΑ</span>
+        <h2 style="font-size: 1.6rem; font-weight: 900; margin-bottom: 4px;" id="theoryTitle"></h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem;" id="theorySubtitle"></p>
+
+        <div class="theory-rule-box" id="theoryRuleBox"></div>
+
+        <div style="font-size: 0.85rem; font-weight: 800; color: var(--duo-gold); text-transform: uppercase; margin-bottom: 8px;">
+          🎧 Πατησε σε οποιαδηποτε γραμμη του πινακα για να ακουσεις την προφορα στα Ολλανδικα:
+        </div>
+
+        <table class="grammar-table">
+          <thead>
+            <tr>
+              <th>Ολλανδικα</th>
+              <th>Προφορα</th>
+              <th>Ελληνικα</th>
+              <th>Γραμματικη Σημειωση</th>
+              <th>Ηχος</th>
+            </tr>
+          </thead>
+          <tbody id="theoryTableBody"></tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-primary" onclick="beginQuiz()">ΞΕΚΙΝΑ ΤΙΣ 10 ΠΙΣΤΕΣ ΤΗΣ ΕΒΔΟΜΑΔΑΣ 🚀</button>
+      </div>
+    </div>
+
+    <!-- 3. GAMEPLAY SCREEN (10 ΠΙΣΤΕΣ ΧΩΡΙΣ SPOILERS) -->
+    <div class="screen" id="gameScreen">
+      <div class="quiz-container">
+        <div>
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span class="level-pill" id="levelPill">ΠΙΣΤΑ 1 / 10</span>
+            <button class="reset-btn" onclick="openTheory(activeWeek.week)" style="color:var(--duo-blue); border-color:var(--duo-blue);">📖 Δες ξανά τη Θεωρία</button>
+          </div>
+          <h2 class="question-type-label" id="questionLabel"></h2>
+
+          <div class="prompt-box">
+            <button class="speaker-btn" id="promptAudioBtn" title="Άκουσε στα Ολλανδικά">🔊</button>
+            <div style="flex: 1;">
+              <div class="prompt-main" id="promptMainText"></div>
+              <div class="prompt-sub" id="promptSubText"></div>
+            </div>
+          </div>
+
+          <div class="options-grid" id="optionsContainer"></div>
+
+          <div class="translation-area" id="translationContainer" style="display: none;">
+            <input type="text" class="text-input" id="translationInput" placeholder="Πληκτρολόγησε στα Ολλανδικά ή πάτησε τις λέξεις από κάτω..." autocomplete="off" />
+            <div class="word-bank" id="wordBank"></div>
+          </div>
+        </div>
+
+        <div>
+          <div class="feedback-sheet" id="feedbackSheet">
+            <div class="feedback-header">
+              <span class="feedback-title" id="feedbackTitle"></span>
+              <button class="speaker-btn" id="feedbackAudioBtn" title="Άκουσε τη σωστή πρόταση">🔊</button>
+            </div>
+            <div class="feedback-detail" id="feedbackDetail"></div>
+          </div>
+
+          <button class="btn-primary" id="actionBtn" onclick="handleAction()">ΕΛΕΓΧΟΣ</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. END SCREEN -->
+    <div class="screen" id="endScreen">
+      <div class="end-box">
+        <div style="font-size: 4.2rem;" id="endIcon">🏆</div>
+        <h1 style="font-size: 1.9rem; font-weight: 900; margin: 8px 0;" id="endTitle"></h1>
+        <p style="color: var(--text-muted); font-size: 1rem;" id="endSubtitle"></p>
+        <div class="stars-row" id="endStars">⭐⭐⭐</div>
+
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="label">Συνολικο XP</div>
+            <div class="value" style="color: var(--duo-gold);" id="finalXp">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Καρδιες</div>
+            <div class="value" style="color: var(--duo-red);" id="finalHearts">5/5</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Ακριβεια</div>
+            <div class="value" style="color: var(--duo-green);" id="finalAccuracy">100%</div>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="nextWeekBtn" onclick="goToNextWeek()">ΕΠΟΜΕΝΗ ΕΒΔΟΜΑΔΑ ➔</button>
+        <button class="btn-secondary" onclick="beginQuiz()">ΕΠΑΝΑΛΗΨΗ ΑΥΤΗΣ ΤΗΣ ΕΒΔΟΜΑΔΑΣ 🔄</button>
+        <button class="btn-secondary" onclick="goHome()">ΕΠΙΣΤΡΟΦΗ ΣΤΟ ΠΡΟΓΡΑΜΜΑ 12 ΕΒΔΟΜΑΔΩΝ 🏠</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ΦΟΡΤΩΣΗ ΤΩΝ 12 ΕΒΔΟΜΑΔΩΝ ΥΛΗΣ -->
+  <script src="curriculum_part1.js"></script>
+  <script src="curriculum_part2.js"></script>
+
+  <script>
+    // --- LOCALSTORAGE SAVE SYSTEM ---
+    const STORAGE_KEY = "dutchlingo_progress_v1";
+    let progressData = {
+      xp: 0,
+      completedWeeks: {} // { weekNumber: starsCount }
+    };
+
+    function loadProgress() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) progressData = JSON.parse(saved);
+      } catch (e) {}
+    }
+
+    function saveProgress() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(progressData));
+      } catch (e) {}
+    }
+
+    function resetProgress() {
+      if (confirm("Θέλεις σίγουρα να μηδενίσεις την αποθηκευμένη πρόοδό σου;")) {
+        progressData = { xp: 0, completedWeeks: {} };
+        saveProgress();
+        updateHeaderStats();
+        renderDashboard();
+      }
+    }
+
+    // --- STATE ---
+    let activeWeek = null;
+    let currentIdx = 0;
+    let hearts = 5;
+    let correctCount = 0;
+    let selectedOption = null;
+    let isAnswered = false;
+
+    // --- WEB SPEECH API (nl-NL) ---
+    function speakDutch(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const cleanText = text
+        .replace(/->/g, ",")
+        .replace(/\(.+?\)/g, "")
+        .replace(/\//g, ",")
+        .replace(/\.\.\./g, "");
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = "nl-NL";
+      utterance.rate = 0.86;
+
+      const voices = window.speechSynthesis.getVoices();
+      const dutchVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes("nl"));
+      if (dutchVoice) utterance.voice = dutchVoice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    if ("speechSynthesis" in window) {
+      window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    }
+
+    // --- SOUND EFFECTS ---
+    function playSoundEffect(type) {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const now = ctx.currentTime;
+        const notes = type === "correct" ? [523.25, 659.25, 783.99]
+                    : type === "victory" ? [523.25, 659.25, 783.99, 1046.5]
+                    : [220, 174.61];
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type === "wrong" ? "sawtooth" : "sine";
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.11, now + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.25);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + idx * 0.09);
+          osc.stop(now + idx * 0.09 + 0.25);
+        });
+      } catch (e) {}
+    }
+
+    // --- UI NAVIGATION ---
+    function showScreen(id) {
+      document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+
+      const isHome = id === "startScreen";
+      const isQuiz = id === "gameScreen";
+      document.getElementById("backToMenuBtn").style.display = isHome ? "none" : "inline-block";
+      document.getElementById("quizProgressWrapper").style.display = isQuiz ? "block" : "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function updateHeaderStats() {
+      const heartsStr = "❤️".repeat(hearts) + "🖤".repeat(Math.max(0, 5 - hearts));
+      document.getElementById("heartsDisplay").textContent = heartsStr;
+      document.getElementById("xpDisplay").textContent = progressData.xp;
+
+      const doneCount = Object.keys(progressData.completedWeeks).length;
+      const totalWeeks = window.FULL_CURRICULUM ? window.FULL_CURRICULUM.length : 12;
+      document.getElementById("weeksDoneDisplay").textContent = `${doneCount}/${totalWeeks}`;
+
+      if (activeWeek) {
+        const pct = Math.round((currentIdx / activeWeek.questions.length) * 100);
+        document.getElementById("progressFill").style.width = `${pct}%`;
+      }
+    }
+
+    function renderDashboard() {
+      const container = document.getElementById("curriculumContainer");
+      container.innerHTML = "";
+
+      const monthsMap = new Map();
+      window.FULL_CURRICULUM.forEach(item => {
+        if (!monthsMap.has(item.month)) monthsMap.set(item.month, []);
+        monthsMap.get(item.month).push(item);
+      });
+
+      monthsMap.forEach((weeks, monthTitle) => {
+        const section = document.createElement("div");
+        section.className = "month-section";
+
+        const header = document.createElement("div");
+        header.className = "month-header";
+        header.innerHTML = `<span>🗓️ ${monthTitle}</span><span>${weeks.length} Εβδομάδες</span>`;
+        section.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "weeks-grid";
+
+        weeks.forEach(w => {
+          const card = document.createElement("div");
+          card.className = `week-card ${w.color}`;
+          card.onclick = () => openTheory(w.week);
+
+          const savedStars = progressData.completedWeeks[w.week];
+          const starsBadge = savedStars
+            ? "⭐".repeat(savedStars)
+            : "▶️ Ξεκίνα";
+
+          card.innerHTML = `
+            <div>
+              <div class="week-card-top">
+                <span class="week-badge">${w.icon} ΕΒΔΟΜΑΔΑ ${w.week}</span>
+                <span class="week-stars">${starsBadge}</span>
+              </div>
+              <h3>${w.title.replace(/^Εβδομάδα \d+:\s*/, "")}</h3>
+              <p>${w.subtitle}</p>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        section.appendChild(grid);
+        container.appendChild(section);
+      });
+    }
+
+    function goHome() {
+      hearts = 5;
+      updateHeaderStats();
+      renderDashboard();
+      showScreen("startScreen");
+    }
+
+    // --- THEORY SCREEN ---
+    function openTheory(weekNum) {
+      activeWeek = window.FULL_CURRICULUM.find(w => w.week === weekNum);
+      if (!activeWeek) return;
+
+      document.getElementById("theoryWeekBadge").textContent = `${activeWeek.month} • ΕΒΔΟΜΑΔΑ ${activeWeek.week}`;
+      document.getElementById("theoryTitle").textContent = activeWeek.title;
+      document.getElementById("theorySubtitle").textContent = activeWeek.subtitle;
+      document.getElementById("theoryRuleBox").innerHTML = activeWeek.rule;
+
+      const tbody = document.getElementById("theoryTableBody");
+      tbody.innerHTML = "";
+      activeWeek.table.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.style.cursor = "pointer";
+        tr.onclick = () => speakDutch(row.nl);
+        tr.innerHTML = `
+          <td class="dutch-cell">${row.nl}</td>
+          <td class="phonetic-cell">${row.ph}</td>
+          <td><strong>${row.el}</strong></td>
+          <td class="note-cell">${row.note || ""}</td>
+          <td><button class="speaker-btn" style="width:34px;height:34px;font-size:0.95rem;">🔊</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      showScreen("theoryScreen");
+    }
+
+    // --- QUIZ GAMEPLAY ---
+    function beginQuiz() {
+      currentIdx = 0;
+      hearts = 5;
+      correctCount = 0;
+      updateHeaderStats();
+      showScreen("gameScreen");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      isAnswered = false;
+      selectedOption = null;
+      const q = activeWeek.questions[currentIdx];
+
+      const pill = document.getElementById("levelPill");
+      if (q.isBoss) {
+        pill.textContent = `👑 ΕΒΔΟΜΑΔΑ ${activeWeek.week} • ΠΙΣΤΑ ${q.level}/10 • MINI-BOSS`;
+        pill.classList.add("boss");
+      } else {
+        pill.textContent = `ΕΒΔΟΜΑΔΑ ${activeWeek.week} • ΠΙΣΤΑ ${q.level} / ${activeWeek.questions.length}`;
+        pill.classList.remove("boss");
+      }
+
+      document.getElementById("questionLabel").textContent = q.label;
+      document.getElementById("promptMainText").textContent = q.promptMain;
+      document.getElementById("promptSubText").textContent = q.promptSub;
+
+      // Κρύβουμε το κουμπί ήχου όταν η ερώτηση έχει κενό ή ζητάει μετάφραση στα Ολλανδικά, ώστε να μην προδίδει την απάντηση!
+      const promptAudioBtn = document.getElementById("promptAudioBtn");
+      if (q.type === "translate" || q.promptMain.includes("___")) {
+        promptAudioBtn.style.display = "none";
+      } else {
+        promptAudioBtn.style.display = "inline-flex";
+        promptAudioBtn.onclick = () => speakDutch(q.dutchAudio);
+        setTimeout(() => speakDutch(q.dutchAudio), 200);
+      }
+
+      document.getElementById("feedbackSheet").className = "feedback-sheet";
+      const optionsContainer = document.getElementById("optionsContainer");
+      const translationContainer = document.getElementById("translationContainer");
+      const actionBtn = document.getElementById("actionBtn");
+
+      actionBtn.textContent = "ΕΛΕΓΧΟΣ";
+      actionBtn.disabled = true;
+
+      if (q.type === "choice" || q.type === "fill") {
+        optionsContainer.style.display = "grid";
+        translationContainer.style.display = "none";
+        optionsContainer.innerHTML = "";
+
+        q.options.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.innerHTML = `<span>${opt}</span>`;
+          btn.onclick = () => {
+            if (isAnswered) return;
+            document.querySelectorAll(".option-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            selectedOption = opt;
+            actionBtn.disabled = false;
+          };
+          optionsContainer.appendChild(btn);
+        });
+      } else if (q.type === "translate") {
+        optionsContainer.style.display = "none";
+        translationContainer.style.display = "flex";
+
+        const input = document.getElementById("translationInput");
+        input.value = "";
+        input.disabled = false;
+        input.oninput = () => {
+          actionBtn.disabled = input.value.trim().length === 0;
+        };
+
+        const bank = document.getElementById("wordBank");
+        bank.innerHTML = "";
+        q.wordBank.forEach(word => {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "word-chip";
+          chip.textContent = word;
+          chip.onclick = () => {
+            if (isAnswered) return;
+            speakDutch(word);
+            const cur = input.value.trim();
+            input.value = cur ? `${cur} ${word}` : word;
+            actionBtn.disabled = false;
+            input.focus();
+          };
+          bank.appendChild(chip);
+        });
+      }
+    }
+
+    function normalizeText(str) {
+      return str.toLowerCase().replace(/[.,!?;]/g, "").replace(/\s+/g, " ").trim();
+    }
+
+    function handleAction() {
+      if (!isAnswered) checkAnswer();
+      else nextStep();
+    }
+
+    function checkAnswer() {
+      isAnswered = true;
+      const q = activeWeek.questions[currentIdx];
+      let isCorrect = false;
+
+      if (q.type === "choice" || q.type === "fill") {
+        isCorrect = selectedOption === q.correctAnswer;
+        document.querySelectorAll(".option-btn").forEach(btn => {
+          btn.disabled = true;
+          const text = btn.innerText.trim();
+          if (text === q.correctAnswer) btn.classList.add("correct");
+          else if (text === selectedOption && !isCorrect) btn.classList.add("wrong");
+        });
+      } else if (q.type === "translate") {
+        const input = document.getElementById("translationInput");
+        input.disabled = true;
+        const userNorm = normalizeText(input.value);
+        isCorrect = q.acceptedAnswers.some(ans => normalizeText(ans) === userNorm);
+      }
+
+      const feedbackSheet = document.getElementById("feedbackSheet");
+      const feedbackTitle = document.getElementById("feedbackTitle");
+      const feedbackDetail = document.getElementById("feedbackDetail");
+      const feedbackAudioBtn = document.getElementById("feedbackAudioBtn");
+      const actionBtn = document.getElementById("actionBtn");
+
+      feedbackAudioBtn.onclick = () => speakDutch(q.dutchAudio);
+      speakDutch(q.dutchAudio);
+
+      if (isCorrect) {
+        const reward = q.isBoss ? 50 : 10;
+        progressData.xp += reward;
+        correctCount++;
+        saveProgress();
+        playSoundEffect("correct");
+
+        feedbackSheet.className = "feedback-sheet correct";
+        feedbackTitle.textContent = q.isBoss ? `🎉 ΝΙΚΗΣΕΣ ΤΟ MINI-BOSS! +${reward} XP` : `✅ Σωστά! +${reward} XP`;
+        feedbackDetail.textContent = q.explanation;
+      } else {
+        hearts = Math.max(0, hearts - 1);
+        playSoundEffect("wrong");
+
+        feedbackSheet.className = "feedback-sheet wrong";
+        feedbackTitle.textContent = `❌ Λάθος! (-1 ❤️)`;
+        const rightText = q.displayCorrect || q.correctAnswer;
+        feedbackDetail.innerHTML = `<strong>Σωστή απάντηση:</strong> ${rightText}<br>${q.explanation}`;
+      }
+
+      updateHeaderStats();
+      actionBtn.textContent = hearts === 0 ? "ΤΕΛΟΣ ΠΑΙΧΝΙΔΙΟΥ" : "ΣΥΝΕΧΕΙΑ";
+      actionBtn.disabled = false;
+    }
+
+    function nextStep() {
+      if (hearts === 0) {
+        showEndScreen(false);
+        return;
+      }
+      currentIdx++;
+      if (currentIdx >= activeWeek.questions.length) {
+        document.getElementById("progressFill").style.width = "100%";
+        const earnedStars = hearts >= 4 ? 3 : hearts >= 2 ? 2 : 1;
+        const prevStars = progressData.completedWeeks[activeWeek.week] || 0;
+        progressData.completedWeeks[activeWeek.week] = Math.max(prevStars, earnedStars);
+        saveProgress();
+        updateHeaderStats();
+        showEndScreen(true);
+      } else {
+        updateHeaderStats();
+        loadQuestion();
+      }
+    }
+
+    function showEndScreen(victory) {
+      showScreen("endScreen");
+      const endIcon = document.getElementById("endIcon");
+      const endTitle = document.getElementById("endTitle");
+      const endSubtitle = document.getElementById("endSubtitle");
+      const endStars = document.getElementById("endStars");
+      const nextWeekBtn = document.getElementById("nextWeekBtn");
+
+      const accuracy = Math.round((correctCount / activeWeek.questions.length) * 100);
+      document.getElementById("finalXp").textContent = `${progressData.xp} XP`;
+      document.getElementById("finalHearts").textContent = `${hearts}/5`;
+      document.getElementById("finalAccuracy").textContent = `${accuracy}%`;
+
+      const hasNextWeek = window.FULL_CURRICULUM.some(w => w.week === activeWeek.week + 1);
+      nextWeekBtn.style.display = victory && hasNextWeek ? "block" : "none";
+
+      if (victory) {
+        playSoundEffect("victory");
+        endIcon.textContent = "🏆🌷";
+        endTitle.textContent = `Εβδομάδα ${activeWeek.week} Ολοκληρώθηκε!`;
+        endSubtitle.textContent = activeWeek.title;
+        endStars.textContent = hearts >= 4 ? "⭐⭐⭐" : hearts >= 2 ? "⭐⭐" : "⭐";
+      } else {
+        endIcon.textContent = "💔";
+        endTitle.textContent = "Game Over!";
+        endSubtitle.textContent = "Έχασες όλες τις καρδιές σου. Διάβασε ξανά τον πίνακα θεωρίας και δοκίμασε πάλι!";
+        endStars.textContent = "🖤🖤🖤";
+      }
+    }
+
+    function goToNextWeek() {
+      if (activeWeek) {
+        openTheory(activeWeek.week + 1);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const gameActive = document.getElementById("gameScreen").classList.contains("active");
+        const actionBtn = document.getElementById("actionBtn");
+        if (gameActive && !actionBtn.disabled) handleAction();
+      }
+    });
+
+    // Αρχικοποίηση Εφαρμογής
+    loadProgress();
+    updateHeaderStats();
+    renderDashboard();
+  </script>
+</body>
+</html>
