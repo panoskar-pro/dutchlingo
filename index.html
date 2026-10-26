@@ -1024,7 +1024,14 @@
         translationContainer.style.display = "none";
         optionsContainer.innerHTML = "";
 
-        q.options.forEach(opt => {
+        // Τυχαίο ανακάτεμα (Fisher-Yates shuffle) ώστε η σωστή απάντηση να μην είναι ποτέ στην ίδια θέση!
+        const shuffledOptions = [...q.options];
+        for (let i = shuffledOptions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+        }
+
+        shuffledOptions.forEach(opt => {
           const btn = document.createElement("button");
           btn.className = "option-btn";
           btn.innerHTML = `<span>${opt}</span>`;
@@ -1050,7 +1057,19 @@
 
         const bank = document.getElementById("wordBank");
         bank.innerHTML = "";
-        q.wordBank.forEach(word => {
+
+        // Τυχαίο ανακάτεμα (Fisher-Yates shuffle) στις λέξεις της πρότασης ώστε να μην είναι στη σειρά 1, 2, 3!
+        const shuffledWords = [...q.wordBank];
+        for (let i = shuffledWords.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+        }
+        // Αν κατά τύχη οι πρώτες λέξεις βγήκαν με την ακριβή αρχική σειρά, τις αντιστρέφουμε
+        if (shuffledWords.length > 2 && shuffledWords[0] === q.wordBank[0] && shuffledWords[1] === q.wordBank[1]) {
+          [shuffledWords[0], shuffledWords[shuffledWords.length - 1]] = [shuffledWords[shuffledWords.length - 1], shuffledWords[0]];
+        }
+
+        shuffledWords.forEach(word => {
           const chip = document.createElement("button");
           chip.type = "button";
           chip.className = "word-chip";
